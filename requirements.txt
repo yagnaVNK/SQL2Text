@@ -3,5 +3,6 @@ langchain-anthropic
 ollama
 pandas
 openpyxl
+uvicorn
 langchain-experimental
 tabulate
