@@ -1,0 +1,51 @@
+Student ID,Student Name,Advisor Name,Course Code,Course Name,Term,Instructor Name,Days,Time,Building,Room Number,Credits
+SID01,Student 01,Advisor 2,CSC101,Intro to CS,Fall 2024,Professor 1,MWF,8:00 AM,Building 1,100,3
+SID01,Student 01,Advisor 2,CSC102,Data Structures,Fall 2024,Professor 2,TR,10:00 AM,Building 2,101,4
+SID01,Student 01,Advisor 2,CSC103,Algorithms,Fall 2024,Professor 3,MWF,1:00 PM,Building 3,102,3
+SID02,Student 02,Advisor 3,CSC104,Databases,Fall 2024,Professor 4,TR,3:00 PM,Building 1,103,4
+SID02,Student 02,Advisor 3,CSC105,Operating Systems,Fall 2024,Professor 5,MWF,8:00 AM,Building 2,104,3
+SID02,Student 02,Advisor 3,CSC106,AI Fundamentals,Fall 2024,Professor 6,TR,10:00 AM,Building 3,105,4
+SID03,Student 03,Advisor 4,CSC107,Software Engineering,Fall 2024,Professor 7,MWF,1:00 PM,Building 1,106,3
+SID03,Student 03,Advisor 4,CSC108,Machine Learning,Fall 2024,Professor 1,TR,3:00 PM,Building 2,107,4
+SID03,Student 03,Advisor 4,CSC109,Cybersecurity,Fall 2024,Professor 2,MWF,8:00 AM,Building 3,108,3
+SID04,Student 04,Advisor 5,CSC110,Cloud Computing,Fall 2024,Professor 3,TR,10:00 AM,Building 1,109,4
+SID04,Student 04,Advisor 5,CSC101,Intro to CS,Fall 2024,Professor 4,MWF,1:00 PM,Building 2,100,3
+SID04,Student 04,Advisor 5,CSC102,Data Structures,Fall 2024,Professor 5,TR,3:00 PM,Building 3,101,4
+SID05,Student 05,Advisor 1,CSC103,Algorithms,Fall 2024,Professor 6,MWF,8:00 AM,Building 1,102,3
+SID05,Student 05,Advisor 1,CSC104,Databases,Fall 2024,Professor 7,TR,10:00 AM,Building 2,103,4
+SID05,Student 05,Advisor 1,CSC105,Operating Systems,Fall 2024,Professor 1,MWF,1:00 PM,Building 3,104,3
+SID06,Student 06,Advisor 2,CSC106,AI Fundamentals,Fall 2024,Professor 2,TR,3:00 PM,Building 1,105,4
+SID06,Student 06,Advisor 2,CSC107,Software Engineering,Fall 2024,Professor 3,MWF,8:00 AM,Building 2,106,3
+SID06,Student 06,Advisor 2,CSC108,Machine Learning,Fall 2024,Professor 4,TR,10:00 AM,Building 3,107,4
+SID07,Student 07,Advisor 3,CSC109,Cybersecurity,Fall 2024,Professor 5,MWF,1:00 PM,Building 1,108,3
+SID07,Student 07,Advisor 3,CSC110,Cloud Computing,Fall 2024,Professor 6,TR,3:00 PM,Building 2,109,4
+SID07,Student 07,Advisor 3,CSC101,Intro to CS,Fall 2024,Professor 7,MWF,8:00 AM,Building 3,100,3
+SID08,Student 08,Advisor 4,CSC102,Data Structures,Fall 2024,Professor 1,TR,10:00 AM,Building 1,101,4
+SID08,Student 08,Advisor 4,CSC103,Algorithms,Fall 2024,Professor 2,MWF,1:00 PM,Building 2,102,3
+SID08,Student 08,Advisor 4,CSC104,Databases,Fall 2024,Professor 3,TR,3:00 PM,Building 3,103,4
+SID09,Student 09,Advisor 5,CSC105,Operating Systems,Fall 2024,Professor 4,MWF,8:00 AM,Building 1,104,3
+SID09,Student 09,Advisor 5,CSC106,AI Fundamentals,Fall 2024,Professor 5,TR,10:00 AM,Building 2,105,4
+SID09,Student 09,Advisor 5,CSC107,Software Engineering,Fall 2024,Professor 6,MWF,1:00 PM,Building 3,106,3
+SID10,Student 10,Advisor 1,CSC108,Machine Learning,Fall 2024,Professor 7,TR,3:00 PM,Building 1,107,4
+SID10,Student 10,Advisor 1,CSC109,Cybersecurity,Fall 2024,Professor 1,MWF,8:00 AM,Building 2,108,3
+SID11,Student 11,Advisor 2,CSC110,Cloud Computing,Fall 2024,Professor 2,TR,10:00 AM,Building 3,109,4
+SID11,Student 11,Advisor 2,CSC101,Intro to CS,Fall 2024,Professor 3,MWF,1:00 PM,Building 1,100,3
+SID11,Student 11,Advisor 2,CSC102,Data Structures,Fall 2024,Professor 4,TR,3:00 PM,Building 2,101,4
+SID12,Student 12,Advisor 3,CSC103,Algorithms,Fall 2024,Professor 5,MWF,8:00 AM,Building 3,102,3
+SID12,Student 12,Advisor 3,CSC104,Databases,Fall 2024,Professor 6,TR,10:00 AM,Building 1,103,4
+SID12,Student 12,Advisor 3,CSC105,Operating Systems,Fall 2024,Professor 7,MWF,1:00 PM,Building 2,104,3
+SID13,Student 13,Advisor 4,CSC106,AI Fundamentals,Fall 2024,Professor 1,TR,3:00 PM,Building 3,105,4
+SID13,Student 13,Advisor 4,CSC107,Software Engineering,Fall 2024,Professor 2,MWF,8:00 AM,Building 1,106,3
+SID13,Student 13,Advisor 4,CSC108,Machine Learning,Fall 2024,Professor 3,TR,10:00 AM,Building 2,107,4
+SID14,Student 14,Advisor 5,CSC109,Cybersecurity,Fall 2024,Professor 4,MWF,1:00 PM,Building 3,108,3
+SID14,Student 14,Advisor 5,CSC110,Cloud Computing,Fall 2024,Professor 5,TR,3:00 PM,Building 1,109,4
+SID14,Student 14,Advisor 5,CSC101,Intro to CS,Fall 2024,Professor 6,MWF,8:00 AM,Building 2,100,3
+SID15,Student 15,Advisor 1,CSC102,Data Structures,Fall 2024,Professor 7,TR,10:00 AM,Building 3,101,4
+SID15,Student 15,Advisor 1,CSC103,Algorithms,Fall 2024,Professor 1,MWF,1:00 PM,Building 1,102,3
+SID15,Student 15,Advisor 1,CSC104,Databases,Fall 2024,Professor 2,TR,3:00 PM,Building 2,103,4
+SID16,Student 16,Advisor 2,CSC105,Operating Systems,Fall 2024,Professor 3,MWF,8:00 AM,Building 3,104,3
+SID16,Student 16,Advisor 2,CSC106,AI Fundamentals,Fall 2024,Professor 4,TR,10:00 AM,Building 1,105,4
+SID16,Student 16,Advisor 2,CSC107,Software Engineering,Fall 2024,Professor 5,MWF,1:00 PM,Building 2,106,3
+SID17,Student 17,Advisor 3,CSC108,Machine Learning,Fall 2024,Professor 6,TR,3:00 PM,Building 3,107,4
+SID17,Student 17,Advisor 3,CSC109,Cybersecurity,Fall 2024,Professor 7,MWF,8:00 AM,Building 1,108,3
+SID17,Student 17,Advisor 3,CSC110,Cloud Computing,Fall 2024,Professor 1,TR,10:00 AM,Building 2,109,4

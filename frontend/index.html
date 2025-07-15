@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Q&A Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-container">
+            <h1 style="color: #524306; margin-bottom: 30px; font-size: 2.5em;">SQL Q&A Assistant</h1>
+            <p style="color: #666; margin-bottom: 30px;">Please login to start asking questions about your data</p>
+            
+            <div class="form-group">
+                <label for="userId">User ID</label>
+                <input type="text" id="userId" placeholder="Enter your user ID" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userRole">Role</label>
+                <select id="userRole" required>
+                    <option value="">Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="advisor">Advisor</option>
+                    <option value="professor">Professor</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="login()" id="loginBtn">Login</button>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chatScreen" class="chat-container hidden">
+            <div class="chat-header">
+                <div class="user-info">
+                    <h2 id="welcomeMessage">Welcome!</h2>
+                    <p id="userDetails"></p>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-secondary" onclick="toggleHistory()">History</button>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+            </div>
+            
+            <div class="messages" id="messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hi! I'm your SQL assistant. I can help you query your data. Just ask me anything about your student information, grades, schedules, or any other data you have access to!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing your question...</p>
+            </div>
+            
+            <div class="input-container">
+                <input type="text" 
+                       class="question-input" 
+                       id="questionInput" 
+                       placeholder="Ask me anything about your data..."
+                       onkeypress="handleKeyPress(event)">
+                <button class="btn send-btn" onclick="askQuestion()" id="sendBtn">
+                    →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Panel -->
+    <div id="historyPanel" class="history-panel">
+        <div class="history-header">
+            <h3>Chat History</h3>
+            <div>
+                <button class="btn btn-secondary" onclick="clearHistory()" style="margin-right: 10px;">Clear</button>
+                <button class="btn btn-secondary" onclick="toggleHistory()">×</button>
+            </div>
+        </div>
+        <div class="history-content" id="historyContent">
+            <p>Loading history...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+	    //const API_BASE_URL = 'https://nuclear-camps-jill-her.trycloudflare.com';
+        let currentUser = null;
+
+        // Utility Functions
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${isError ? 'error' : ''} show`;
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        function formatSQL(sql) {
+            return sql.replace(/\b(SELECT|FROM|WHERE|JOIN|GROUP BY|ORDER BY|HAVING|DISTINCT)\b/gi, 
+                match => `<strong>${match}</strong>`);
+        }
+
+        function createDataTable(data) {
+            if (!data || !data.columns || !data.rows || data.rows.length === 0) {
+                return '<p><em>No data returned</em></p>';
+            }
+
+            let html = '<table class="data-table"><thead><tr>';
+            data.columns.forEach(col => {
+                html += `<th>${col}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            data.rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell !== null ? cell : '<em>null</em>'}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            return html;
+        }
+
+        // Authentication Functions
+        async function login() {
+            const userId = document.getElementById('userId').value.trim();
+            const userRole = document.getElementById('userRole').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!userId || !userRole) {
+                showToast('Please fill in all fields', true);
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        user_role: userRole
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentUser = {
+                        userId: userId,
+                        userRole: userRole
+                    };
+                    
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('chatScreen').classList.remove('hidden');
+                    document.getElementById('welcomeMessage').textContent = `Welcome, ${userId}!`;
+                    document.getElementById('userDetails').textContent = `Role: ${userRole.charAt(0).toUpperCase() + userRole.slice(1)} | History: ${result.chat_history_count} conversations`;
+                    
+                    showToast('Login successful!');
+                    loadHistory();
+                } else {
+                    showToast(result.error || 'Login failed', true);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showToast('Connection error. Please check if the API server is running.', true);
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        async function logout() {
+            if (!currentUser) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.userId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Logged out successfully');
+                } else {
+                    showToast('Logout error', true);
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            } finally {
+                // Reset UI regardless of API response
+                currentUser = null;
+                document.getElementById('chatScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('userId').value = '';
+                document.getElementById('userRole').value = '';
+                document.getElementById('messages').innerHTML = `
+                    <div class="message bot">
+                        <div class="message-content">
+                            Hi! I'm your SQL assistant. I can help you query your data. Just ask me anything about your student information, grades, schedules, or any other data you have access to!
+                        </div>
+                    </div>
+                `;
+                document.getElementById('historyPanel').classList.remove('open');
+            }
+        }
+
+        // Chat Functions
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                askQuestion();
+            }
+        }
+
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                showToast('Please enter a question', true);
+                return;
+            }
+
+            if (!currentUser) {
+                showToast('Please login first', true);
+                return;
+            }
+
+            // Add user message to chat
+            addMessage(question, 'user');
+            questionInput.value = '';
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/ask`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.userId,
+                        question: question
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Add bot response with SQL and data
+                    let botMessage = result.answer;
+                    
+                    // Only show SQL query if user is admin
+                    if (result.sql_query && currentUser.userRole !== 'student') {
+                        botMessage += `<div class="message-meta"><strong>SQL Query:</strong></div>`;
+                        botMessage += `<div class="sql-query">${formatSQL(result.sql_query)}</div>`;
+                    }
+                    
+                    if (result.data && result.data.rows && result.data.rows.length > 0) {
+                        botMessage += `<div class="message-meta"><strong>Data Results:</strong></div>`;
+                        botMessage += createDataTable(result.data);
+                    }
+                    
+                    addMessage(botMessage, 'bot');
+                } else {
+                    addMessage(result.error || 'Sorry, I encountered an error processing your question.', 'error');
+                }
+            } catch (error) {
+                console.error('Question error:', error);
+                addMessage('Connection error. Please check if the API server is running.', 'error');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        function addMessage(content, type) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            messageDiv.innerHTML = `
+                <div class="message-content">${content}</div>
+                <div class="message-meta">${timestamp}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // History Functions
+        function toggleHistory() {
+            const historyPanel = document.getElementById('historyPanel');
+            if (historyPanel.classList.contains('open')) {
+                historyPanel.classList.remove('open');
+            } else {
+                historyPanel.classList.add('open');
+                loadHistory();
+            }
+        }
+
+        async function loadHistory() {
+            if (!currentUser) return;
+
+            const historyContent = document.getElementById('historyContent');
+            historyContent.innerHTML = '<p>Loading history...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/history/${currentUser.userId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.history.length === 0) {
+                        historyContent.innerHTML = '<p><em>No conversation history yet.</em></p>';
+                    } else {
+                        let historyHTML = '';
+                        result.history.forEach((item, index) => {
+                            historyHTML += `
+                                <div class="history-item">
+                                    <div class="history-question">Q: ${item.question}</div>
+                                    <div class="history-answer">A: ${item.answer}</div>
+                                </div>
+                            `;
+                        });
+                        historyContent.innerHTML = historyHTML;
+                    }
+                } else {
+                    historyContent.innerHTML = '<p><em>Error loading history.</em></p>';
+                }
+            } catch (error) {
+                console.error('History loading error:', error);
+                historyContent.innerHTML = '<p><em>Error loading history.</em></p>';
+            }
+        }
+
+        async function clearHistory() {
+            if (!currentUser) return;
+
+            if (!confirm('Are you sure you want to clear your chat history? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/clear_history/${currentUser.userId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('History cleared successfully');
+                    loadHistory();
+                    
+                    // Update user details
+                    document.getElementById('userDetails').textContent = 
+                        `Role: ${currentUser.userRole.charAt(0).toUpperCase() + currentUser.userRole.slice(1)} | History: 0 conversations`;
+                } else {
+                    showToast('Error clearing history', true);
+                }
+            } catch (error) {
+                console.error('Clear history error:', error);
+                showToast('Error clearing history', true);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on user ID input
+            document.getElementById('userId').focus();
+            
+            // Add some sample placeholder text
+            const placeholders = [
+                "What are my grades this semester?",
+                "Show me my class schedule",
+                "Which students am I advising?",
+                "What courses am I teaching?",
+                "Show me all student data"
+            ];
+            
+            let placeholderIndex = 0;
+            setInterval(() => {
+                if (document.getElementById('chatScreen').classList.contains('hidden')) return;
+                
+                const input = document.getElementById('questionInput');
+                if (input && !input.value) {
+                    input.placeholder = placeholders[placeholderIndex];
+                    placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

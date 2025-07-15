@@ -1,0 +1,7 @@
+langchain
+langchain-anthropic
+ollama
+pandas
+openpyxl
+langchain-experimental
+tabulate

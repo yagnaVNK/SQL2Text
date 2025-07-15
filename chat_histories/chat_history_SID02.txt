@@ -1,0 +1,1 @@
+{"timestamp": "2025-06-28T18:12:28.815336", "question": "What are my courses?", "sql": "SELECT DISTINCT course_code, course_name FROM students_details WHERE student_id = 'SID02';", "answer": "Based on the data retrieved, you are taking 3 courses: CSC104 (Databases), CSC105 (Operating Systems), and CSC106 (AI Fundamentals)."}
