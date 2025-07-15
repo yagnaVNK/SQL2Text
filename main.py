@@ -9,7 +9,6 @@ from sqlalchemy import create_engine, text
 import pandas as pd
 from dotenv import load_dotenv
 from langchain_community.utilities.sql_database import SQLDatabase
-from langchain_ollama import ChatOllama
 from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from typing import Dict, List, Tuple
