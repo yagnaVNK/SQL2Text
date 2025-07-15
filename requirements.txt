@@ -6,3 +6,4 @@ openpyxl
 uvicorn
 langchain-experimental
 tabulate
+flask
