@@ -7,3 +7,4 @@ uvicorn
 langchain-experimental
 tabulate
 flask
+flask-cors
